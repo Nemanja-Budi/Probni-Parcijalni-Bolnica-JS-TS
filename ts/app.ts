@@ -58,35 +58,67 @@ function wireEvents(): void {
       document.getElementById('podaci').innerHTML = `<h2>Procenutalan broj obolelih koji nemaju simptome je: ${procenat.toFixed(2)} %</h2>`
     });
 
-    document.getElementById('gradPozitivni').addEventListener('click',function(){
-      const naj:grad[] = [];
-      let duzinaBeograd:number = 0;
-      bolnice.forEach(b => {
-        if(b.grad == 'Beograd') {
-          let pozitivniBG = b.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
-          duzinaBeograd +=pozitivniBG.length;    
-        }
-        else if(b.grad == 'Novi Sad') {
-          let pozitivniNs = b.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
-          naj.push({naziv: 'Novi Sad', broj: pozitivniNs.length});
-        }
-        else if(b.grad == 'Nis') {
-          let pozitivniNIS = b.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
-          naj.push({naziv: 'Nis', broj: pozitivniNIS.length});
-        }
+    // document.getElementById('gradPozitivni').addEventListener('click',function(){
+    //   const naj:grad[] = [];
+    //   let duzinaBeograd:number = 0;
+    //   bolnice.forEach(b => {
+    //     if(b.grad == 'Beograd') {
+    //       let pozitivniBG = b.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
+    //       duzinaBeograd +=pozitivniBG.length;    
+    //     }
+    //     else if(b.grad == 'Novi Sad') {
+    //       let pozitivniNs = b.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
+    //       naj.push({naziv: 'Novi Sad', broj: pozitivniNs.length});
+    //     }
+    //     else if(b.grad == 'Nis') {
+    //       let pozitivniNIS = b.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
+    //       naj.push({naziv: 'Nis', broj: pozitivniNIS.length});
+    //     }
+    //   });
+    //   naj.push({naziv: 'Beograd', broj: duzinaBeograd});
+    //   let najVeci = 0;
+    //   let grad:grad;
+    //   naj.forEach(v => {
+    //     if(najVeci < v.broj) {
+    //       najVeci = v.broj;
+    //       grad = v;
+    //     }
+    //   });
+    //   console.log(`Grad sa najvise pozitivnih pacijenata je ${grad.naziv} i ukupan broj obolelih je ${najVeci}!`);
+    //   document.getElementById('podaci').innerText = `Grad sa najvise pozitivnih pacijenata je ${grad.naziv} i ukupan broj obolelih je ${najVeci}!`;
+    // });
+
+
+    document.getElementById('gradPozitivni').addEventListener('click', function () {
+      const gradovi: { [key: string]: number } = {};
+  
+      bolnice.forEach(bolnica => {
+          const grad = bolnica.grad;
+          if (!(grad in gradovi)) {
+              gradovi[grad] = 0;
+          }
+  
+          const brojPozitivnih = bolnica.pacijenti.filter(pacijent => pacijent.pcrTest === 'Pozitivan').length;
+          gradovi[grad] += brojPozitivnih;
+    
       });
-      naj.push({naziv: 'Beograd', broj: duzinaBeograd});
-      let najVeci = 0;
-      let grad:grad;
-      naj.forEach(v => {
-        if(najVeci < v.broj) {
-          najVeci = v.broj;
-          grad = v;
-        }
+      console.log(gradovi);
+      let najvisePozitivnih = 0;
+      let najvisePozitivnihGrad = '';
+  
+      Object.entries(gradovi).forEach(([grad, brojPozitivnih]) => {
+          if (brojPozitivnih > najvisePozitivnih) {
+              najvisePozitivnih = brojPozitivnih;
+              najvisePozitivnihGrad = grad;
+          }
       });
-      console.log(`Grad sa najvise pozitivnih pacijenata je ${grad.naziv} i ukupan broj obolelih je ${najVeci}!`);
-      document.getElementById('podaci').innerText = `Grad sa najvise pozitivnih pacijenata je ${grad.naziv} i ukupan broj obolelih je ${najVeci}!`;
-    });
+  
+      const rezultat = `Grad sa najvise pozitivnih pacijenata je ${najvisePozitivnihGrad} i ukupan broj obolelih je ${najvisePozitivnih}!`;
+  
+      console.log(rezultat);
+      document.getElementById('podaci').innerHTML = rezultat;
+  });
+  
 
 
     // -"Grad sa najvise pozitivnih" (id gradPozitivni)
