@@ -254,6 +254,34 @@ function wireEvents() {
         var procenat = (pacijentBezSimptoma.length / pozitivniPacijenti.length) * 100;
         document.getElementById('podaci').innerHTML = "<h2>Procenutalan broj obolelih koji nemaju simptome je: ".concat(procenat.toFixed(2), " %</h2>");
     });
+    document.getElementById('gradPozitivni').addEventListener('click', function () {
+        var _a;
+        var klijenti = bolnice.reduce(function (acc, bolnica) {
+            if (!acc[bolnica.grad]) {
+                acc[bolnica.grad] = [];
+            }
+            var filtrirani = bolnica.pacijenti.filter(function (p) { return p.pcrTest == 'Pozitivan'; });
+            acc[bolnica.grad].push(filtrirani);
+            return acc;
+        }, {});
+        console.log(klijenti);
+        var out = Object.entries(klijenti).map(function (_a) {
+            var grad = _a[0], pacijenti = _a[1];
+            var ukupnoObolelih = pacijenti.reduce(function (prev, next) {
+                if (Array.isArray(next)) {
+                    return prev + next.length;
+                }
+                else {
+                    return prev;
+                }
+            }, 0);
+            return { grad: grad, ukupnoObolelih: ukupnoObolelih };
+        });
+        var maxVrednost = Math.max.apply(Math, out.map(function (item) { return item.ukupnoObolelih; }));
+        var gradNajviseObolelih = (_a = out.find(function (item) { return item.ukupnoObolelih === maxVrednost; })) === null || _a === void 0 ? void 0 : _a.grad;
+        document.getElementById('podaci').innerText = "Grad sa najvise pozitivnih pacijenata je ".concat(gradNajviseObolelih, "! i ukupno ih ime ").concat(maxVrednost);
+    });
+    // old school
     // document.getElementById('gradPozitivni').addEventListener('click',function(){
     //   const naj:grad[] = [];
     //   let duzinaBeograd:number = 0;
@@ -283,38 +311,6 @@ function wireEvents() {
     //   console.log(`Grad sa najvise pozitivnih pacijenata je ${grad.naziv} i ukupan broj obolelih je ${najVeci}!`);
     //   document.getElementById('podaci').innerText = `Grad sa najvise pozitivnih pacijenata je ${grad.naziv} i ukupan broj obolelih je ${najVeci}!`;
     // });
-    document.getElementById('gradPozitivni').addEventListener('click', function () {
-        var gradovi = {};
-        bolnice.forEach(function (bolnica) {
-            var grad = bolnica.grad;
-            if (!(grad in gradovi)) {
-                gradovi[grad] = 0;
-            }
-            var brojPozitivnih = bolnica.pacijenti.filter(function (pacijent) { return pacijent.pcrTest === 'Pozitivan'; }).length;
-            gradovi[grad] += brojPozitivnih;
-        });
-        console.log(gradovi);
-        var najvisePozitivnih = 0;
-        var najvisePozitivnihGrad = '';
-        Object.entries(gradovi).forEach(function (_a) {
-            var grad = _a[0], brojPozitivnih = _a[1];
-            if (brojPozitivnih > najvisePozitivnih) {
-                najvisePozitivnih = brojPozitivnih;
-                najvisePozitivnihGrad = grad;
-            }
-        });
-        var rezultat = "Grad sa najvise pozitivnih pacijenata je ".concat(najvisePozitivnihGrad, " i ukupan broj obolelih je ").concat(najvisePozitivnih, "!");
-        console.log(rezultat);
-        document.getElementById('podaci').innerHTML = rezultat;
-    });
-    // -"Grad sa najvise pozitivnih" (id gradPozitivni)
-    // 			U div sa IDem "podaci" upisati koji grad ima najvise pozitivnih pacijenata.
-    // 			Za svaki grad izracunati koliko ima pozitivnih pacijenata, vodite racuna da vise bolnica mogu pripadati istom gradu.
-    // 			HINT:
-    // 				Prvo napraviti spisak svih gradova.
-    // 				Nakon formiranja spiska svih gradova (niz-a), za svaki grad izracunati koliko ima pozitivnih pacijenata tako sto se saberu vrednosti pozitivnih pacijenata po bolnicama u tom gradu.
-    // 				Ispis u divu treba da bude u obliku:
-    // 					`Grad sa najvise pozitivnih pacijenata je ${grad}!`
     //TODO "Grad sa najvise pozitivnih"
     aktivnaBolnica.refreshHTML();
 }
