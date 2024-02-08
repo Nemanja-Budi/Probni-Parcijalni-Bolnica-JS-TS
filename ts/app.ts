@@ -82,47 +82,6 @@ function wireEvents(): void {
     document.getElementById('podaci').innerHTML = `Grad sa najvise pozitivnih pacijenata je ${grad}! ukupno obolelih ${maxObolelih}`;
   });
 
-
-
-
-
-
-
-
-
-  // -"Grad sa najvise pozitivnih" (id gradPozitivni)
-  // 			U div sa IDem "podaci" upisati koji grad ima najvise pozitivnih pacijenata.
-  // 			Za svaki grad izracunati koliko ima pozitivnih pacijenata, vodite racuna da vise bolnica mogu pripadati istom gradu.
-
-  // 			HINT:
-  // 				Prvo napraviti spisak svih gradova.
-  // 				Nakon formiranja spiska svih gradova (niz-a), za svaki grad izracunati koliko ima pozitivnih pacijenata tako sto se saberu vrednosti pozitivnih pacijenata po bolnicama u tom gradu.
-
-  // 				Ispis u divu treba da bude u obliku:
-  // 					`Grad sa najvise pozitivnih pacijenata je ${grad}!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // document.getElementById('gradPozitivni').addEventListener('click', function () {
 
   //   const klijenti = bolnice.reduce((acc, bolnica) => {
