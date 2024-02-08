@@ -58,36 +58,101 @@ function wireEvents(): void {
     document.getElementById('podaci').innerHTML = `<h2>Procenutalan broj obolelih koji nemaju simptome je: ${procenat.toFixed(2)} %</h2>`
   });
 
-  document.getElementById('gradPozitivni').addEventListener('click', function () {
 
-    const klijenti = bolnice.reduce((acc, bolnica) => {
+  document.getElementById('gradPozitivni').addEventListener('click', function () {
+    const bolnicama = bolnice.reduce((acc, bolnica) => {
       if (!acc[bolnica.grad]) {
         acc[bolnica.grad] = [];
       }
       const filtrirani = bolnica.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
-      acc[bolnica.grad].push(filtrirani);
+      acc[bolnica.grad].push(...filtrirani);
+
       return acc;
+
     }, {});
-    console.log(klijenti);
-
-
-    const out = Object.entries(klijenti).map(([grad, pacijenti]: [string, Pacijent[]]) => {
-      let ukupnoObolelih: number = pacijenti.reduce((prev, next) => {
-        if (Array.isArray(next)) {
-          return prev + next.length;
-        } else {
-          return prev;
-        }
-      }, 0);
-
-      return { grad, ukupnoObolelih };
+    let maxObolelih: number = 0;
+    let grad: string = '';
+    Object.entries(bolnicama).map(([kljuc, pacijent]: [string, Pacijent[]]) => {
+      if (pacijent.length > maxObolelih) {
+        maxObolelih = pacijent.length;
+        grad = kljuc;
+      }
     });
-    const maxVrednost = Math.max(...out.map(item => item.ukupnoObolelih));
-    const gradNajviseObolelih = out.find(item => item.ukupnoObolelih === maxVrednost)?.grad;
-
-    document.getElementById('podaci').innerText = `Grad sa najvise pozitivnih pacijenata je ${gradNajviseObolelih}! i ukupno ih ime ${maxVrednost}`;
-
+    console.log(grad, maxObolelih);
+    document.getElementById('podaci').innerHTML = `Grad sa najvise pozitivnih pacijenata je ${grad}! ukupno obolelih ${maxObolelih}`;
   });
+
+
+
+
+
+
+
+
+
+  // -"Grad sa najvise pozitivnih" (id gradPozitivni)
+  // 			U div sa IDem "podaci" upisati koji grad ima najvise pozitivnih pacijenata.
+  // 			Za svaki grad izracunati koliko ima pozitivnih pacijenata, vodite racuna da vise bolnica mogu pripadati istom gradu.
+
+  // 			HINT:
+  // 				Prvo napraviti spisak svih gradova.
+  // 				Nakon formiranja spiska svih gradova (niz-a), za svaki grad izracunati koliko ima pozitivnih pacijenata tako sto se saberu vrednosti pozitivnih pacijenata po bolnicama u tom gradu.
+
+  // 				Ispis u divu treba da bude u obliku:
+  // 					`Grad sa najvise pozitivnih pacijenata je ${grad}!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // document.getElementById('gradPozitivni').addEventListener('click', function () {
+
+  //   const klijenti = bolnice.reduce((acc, bolnica) => {
+  //     if (!acc[bolnica.grad]) {
+  //       acc[bolnica.grad] = [];
+  //     }
+  //     const filtrirani = bolnica.pacijenti.filter(p => p.pcrTest == 'Pozitivan');
+  //     acc[bolnica.grad].push(filtrirani);
+  //     return acc;
+  //   }, {});
+  //   console.log(klijenti);
+
+
+  //   const out = Object.entries(klijenti).map(([grad, pacijenti]: [string, Pacijent[]]) => {
+  //     let ukupnoObolelih: number = pacijenti.reduce((prev, next) => {
+  //       if (Array.isArray(next)) {
+  //         return prev + next.length;
+  //       } else {
+  //         return prev;
+  //       }
+  //     }, 0);
+
+  //     return { grad, ukupnoObolelih };
+  //   });
+  //   const maxVrednost = Math.max(...out.map(item => item.ukupnoObolelih));
+  //   const gradNajviseObolelih = out.find(item => item.ukupnoObolelih === maxVrednost)?.grad;
+
+  //   document.getElementById('podaci').innerText = `Grad sa najvise pozitivnih pacijenata je ${gradNajviseObolelih}! i ukupno ih ime ${maxVrednost}`;
+
+  // });
 
 
   // old school
